@@ -2,7 +2,7 @@
 
 import random
 print("I will flip a coin 100 times. Guess how many times it'll be heads!")
-guess_heads = input()
+guess_heads = int(input())
 heads = 0
 flips = 0
 def your_guess(x, y):
