@@ -13,7 +13,7 @@ def your_guess(x, y):
 
 while flips < 100:
     if random.randint(0, 1) == 1:
-        heads = heads + 1
-    flips = flips + 1
-    
+        heads += 1
+    flips += 1
+
 your_guess(heads, guess_heads)
