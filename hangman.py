@@ -59,13 +59,13 @@ HANGMANPICS = ['''
         |
 =========''']
 
-words = '''and babook badger bear beaver camel cat clam
+words = '''ant babook badger bear beaver camel cat clam
 cobra cougar coyote crow deer dog donkey duck eagle ferret
 fox frog goat goose hawk lion lizard llama mole monkey
 moose mouse mule newt otter owl panda parrot pigeon python
 rabbit ram rat raven rhino salmon seal shark sheep skunk
 sloth snake spider stork swan tiger trout turkey
-turtle weasel whale wolf wombat zebra''' .split()
+turtle weasel whale wolf wombat zebra'''.split()
 
 def getRandomWord(wordList):
     #this function returns a random string from the passed list of strings.
@@ -133,7 +133,7 @@ while True:
             if secretWord[i] not in correctLetters:
                 foundAllLetters = False
                 break
-            if foundAllLetters:
+        if foundAllLetters:
                 print('Yes! The secret word is"' + secretWord
                       + '"! You have won!')
                 gameIsDone = True
@@ -159,6 +159,7 @@ while True:
                         break
 
             
-            
+#Bug: The correct letters and the missed letters are messed up.
+#Program recognizes correct letters as missed and displays board for them.
 
     
