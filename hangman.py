@@ -59,18 +59,24 @@ HANGMANPICS = ['''
         |
 =========''']
 
-words = '''ant babook badger bear beaver camel cat clam
-cobra cougar coyote crow deer dog donkey duck eagle ferret
-fox frog goat goose hawk lion lizard llama mole monkey
-moose mouse mule newt otter owl panda parrot pigeon python
-rabbit ram rat raven rhino salmon seal shark sheep skunk
-sloth snake spider stork swan tiger trout turkey
-turtle weasel whale wolf wombat zebra'''.split()
+words = {'colors':'''red orange yellow green blue indigo violet white
+black brown emerald'''.split(), 'animals':'''ant babook badger bear beaver
+camel cat clam cobra cougar coyote crow deer dog donkey duck eagle
+ferret fox frog goat goose hawk lion lizard llama mole monkey moose
+mouse mule newt otter owl panda parrot pigeon python rabbit ram rat
+raven rhino salmon seal shark sheep skunk sloth snake spider stork
+swan tiger trout turkey turtle weasel whale wolf wombat zebra'''.split(),
+'fruits':'''apple orange lemon lime pear watermelon grape grapefruit
+cherry banana cantalope mango strawberry'''.split()}
 
-def getRandomWord(wordList):
-    #this function returns a random string from the passed list of strings.
-    wordIndex = random.randint(0, len(wordList) - 1)
-    return wordList[wordIndex]
+def getRandomWord(wordDict):
+    #this function returns a random string from the passed dictionary of lists
+    #of strings and the key also.
+    #First randomly select a word from list of dictionaries:
+    wordKey = random.choice(list(wordDict.keys()))
+    #Second randomly select word from lists in dictionary:
+    wordIndex = random.randint(0, len(wordDict[wordKey]) - 1)
+    return [wordDict[wordKey][wordIndex], wordKey]
 
 def displayBoard(HANGMANPICS, missedLetters, correctLetters, secretWord):
     print(HANGMANPICS[len(missedLetters)])
@@ -116,10 +122,11 @@ def playAgain():
 print('HANGMAN')
 missedLetters = ''
 correctLetters = ''
-secretWord = getRandomWord(words)
+secretWord, secretKey = getRandomWord(words)
 gameIsDone = False
 
 while True:
+    print('The secret word is from the set of ' +secretKey)
     displayBoard(HANGMANPICS, missedLetters, correctLetters, secretWord)
     #let player type in letter
     guess = getGuess(missedLetters + correctLetters)
@@ -154,7 +161,7 @@ while True:
                         missedLetters = ''
                         correctLetters = ''
                         gameIsDone = False
-                        secretWord = getRandomWord(words)
+                        secretWord, secretKey = getRandomWord(words)
                     else:
                         break
 
