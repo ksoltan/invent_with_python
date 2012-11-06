@@ -21,7 +21,7 @@ def GetApple():
     time.sleep(2) #inserts time in between the displayed words.
     print('You have %s apple seeds in your apple.' % appleSeeds)
     time.sleep(3)
-    print('%s' % appleFortune[appleSeeds])
+    print(appleFortune[appleSeeds])
 
 def ShouldPlayAgain():
     print('Would you like to eat an apple? (yes or no)')
