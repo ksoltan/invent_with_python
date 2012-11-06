@@ -13,18 +13,18 @@ def getClues(guess, secretNum):
     if guess == secretNum:
         return 'You got it!!'
 
-    clue = []
+    clues = []
 
     for i in range(len(guess)):
         if guess[i] == secretNum[i]:
-            clue.append('Fermi')
-        elif guess[i] in SecretNum:
-            clue.append('Pico')
-    if len(clue) == 0: 
+            clues.append('Fermi')
+        elif guess[i] in secretNum:
+            clues.append('Pico')
+    if len(clues) == 0: 
         return 'Bagels'
 
-    clue.sort()
-    return ' '.join(clue)
+    clues.sort()
+    return ' '.join(clues)
 
 def isOnlyDigits(num):
     #Returns true if num is a string made up of only digits. Otherwise is False
@@ -38,40 +38,37 @@ def isOnlyDigits(num):
 def PlayAgain():
     #Returns True if player wants to play Again, otherwise returns False
     print('Do you want to play again? (yes or no)')
-    return input().lower().startswith('y')
+    return raw_input().lower().startswith('y')
 
 NUMDIGITS = 3
 MAXGUESS = 10
 
-print('I am thinking of a %s-digit number. Try to guess what it is!' % (NUMDIGITS))
-print('Here are some clues:')
-print('When I say:    That means:')
-print('  Fermi        One digit is correct and in right position.')
-print('  Pico         One digit is correct but in wrong position.')
-print('  Bagels       No digit is correct!')
+def Play():
+    print('I am thinking of a {0}-digit number. Try to guess what it is!'.format(NUMDIGITS))
+    print('Here are some clues:')
+    print('When I say:    That means:')
+    print('  Fermi        One digit is correct and in right position.')
+    print('  Pico         One digit is correct but in wrong position.')
+    print('  Bagels       No digit is correct!')
 
 while True:
     secretNum = getSecretNum(NUMDIGITS)
-    print('I have thought of a number. You have %s guesses to get it!' % (MAXGUESS)
-    numGuesses = 1 #Says it is an Invalid Syntax. WHY!??
+    print('I have thought of a number. You have {0} guesses to get it!'.format(MAXGUESS))
+    numGuesses = 1
     while numGuesses <= MAXGUESS:
         guess = ''
         while len(guess) != NUMDIGITS or not isOnlyDigits(guess):
-            print('Guess #%s: ' % (numGuesses))
-            guess = input()
+            print('Guess #{0}: '.format(numGuesses))
+            guess = raw_input()
 
-        clue = getClues(guess, secretNum)
-        print(clue)
+        clues = getClues(guess, secretNum)
+        print(clues)
         numGuesses += 1
 
         if guess == secretNum:
-              break
-        if numGuesses > MAXGUESS:
-            print('You ran out of guesses. The answer was %s.' % (secretNum))
+            break
+    if numGuesses > MAXGUESS:
+        print('You ran out of guesses. The answer was %s.' % (secretNum))
+        
     if not PlayAgain():
         break
-          
-          
-
-    
-
