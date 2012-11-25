@@ -18,10 +18,12 @@ def getBoard(rows, columns):
   return board
   
 def printBoard(b):
+  print '    0123'
   for r in b:
-    for c in r:
-      print " ", c, " ",
+    for c in range(r):
+      print "c", '.', "c",
     print
+  print '    0123'
     
 def isPositionInRange(positions, pos):
   return pos in positions
@@ -33,7 +35,7 @@ def showBoard(b, show_positions = [], show_all = False):
       value = "."
       if show_all:
         value = row_values[col]
-      elif [row, col] in show_positions:
+      elif [row, col] in show_positions:  
         value = row_values[col]
       print " ", value, " ",
     print
@@ -80,7 +82,9 @@ def memoryGame():
       showBoard(b, goodMoves + move)
       time.sleep(5)
       numMoves += 1
-
+print 'Welcome to memory game. Enter the coordinates!'
+while True:
+  memoryGame()
 
 
 
