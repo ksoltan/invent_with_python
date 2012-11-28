@@ -5,7 +5,7 @@ import copy
 import sys
 
 WORDLIST = [['silicon', 'Si'], ['barium', 'Ba'], ['Tellurium', 'Te'], ['Tungsten', 'W'], ['Iodine', 'I']]
-random.shuffle(wordList)
+random.shuffle(WORDLIST)
 
 def randomWord(words):
   if not words:
@@ -19,4 +19,4 @@ def randomWord(words):
       random.shuffle(words)
       randomWord(words)
       
-randomWord(WORDLIST)
+# randomWord(WORDLIST)
