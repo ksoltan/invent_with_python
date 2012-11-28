@@ -1,7 +1,6 @@
-import minesweeperr
+import minesweeper
 
-
-print 'Move should be invalid: !, 8', minesweeperr.isMoveValid(['!', 8], [[0, 0], [0, 1]])
+# print 'Move should be invalid: !, 8', minesweeperr.isMoveValid(['!', 8], [[0, 0], [0, 1]])
 #tested_positions = []
 #b = minesweeperr.getBoard()
 #minesweeperr.showBoard(b, tested_positions)
@@ -34,3 +33,7 @@ print 'Move should be invalid: !, 8', minesweeperr.isMoveValid(['!', 8], [[0, 0]
 
 #print 'Returns a position: (0, 1)', minesweeperr.getMove()
 
+bo = [[1, 0], [0, 1]]
+print 'foundAllPositions False:', minesweeper.foundAllPositions(bo, [[0, 1]])
+print 'foundAllPositions True:', minesweeper.foundAllPositions(bo,
+  [[0, 1], [1, 0]])

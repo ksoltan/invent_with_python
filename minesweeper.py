@@ -2,11 +2,11 @@
 import random
 import sys
 
-ROWS = 4
-COLUMNS = 4
+ROWS = 5
+COLUMNS = 5
 MINES = 4
 
-def getBoard():
+def newBoard():
   mines = []
   for m in range(MINES):
     mines.append(1)
@@ -32,57 +32,59 @@ def getMove():
   pos = [row, col]
   return pos
   
-def isMoveValid(pos, tested_positions):
+def isValidMove(pos, tested_positions):
   if pos[0] not in range(ROWS) or pos[1] not in range(COLUMNS) or pos in tested_positions:
-    print 'Enter a VALID MOVE!!'
-    new_pos = getMove()
-    isMoveValid(new_pos, tested_positions)
+    # print 'Move is invalid!'
+    return False
   else:
-    return pos, tested_positions.append(pos), True
+    return True
 
 def isBomb(board, pos):
   r = pos[0]
   c = pos[1]
   return board[r][c] == 1
           
-def getNumMines(board, pos):
+def openTrivialPositions(board, tested_positions, pos):
+  if getNumMinesAt(board, pos) != 0:
+    return
   row = pos[0]
   col = pos[1]
+  # Cannot start from -1 as it will wrap around the board.
+  start_row = max(row - 1, 0)
+  start_col = max(col - 1, 0)
+  for r in range(start_row, row + 2): # picks the touching cells left and right
+    for c in range(start_col, col + 2): # picks the touching cells up and down
+      test_pos = [r, c]
+      if isValidMove(test_pos, tested_positions) and \
+        test_pos not in tested_positions:
+        tested_positions.append([r, c])
+        openTrivialPositions(board, tested_positions, test_pos)
+  
+def getNumMinesAt(board, pos):
+  row = pos[0]
+  col = pos[1]
+  # Cannot start from -1 as it will wrap around the board.
   start_row = max(row - 1, 0)
   start_col = max(col - 1, 0)
   num_mines = 0
-  if isBomb(board, pos):
-    print 'You have hit a bomb!'
-    print 'YOU LOSE!!!'
-    showBombBoard(board)
-    if playAgain():
-      startGame()
-    else:
-      sys.exit(0)
-  else: 
-  #since empty spaces are 0, and bombs are 1, if we go through and add the value
-  #given to the spot on the board to number of bombs, we get the number of bombs around it!! 
-    for r in board[start_row: row + 2]: #picks the touching cells left and right
-      for c in r[start_col: col + 2]:#picks the touching cells up and down
-        num_mines += c
+  # Since empty spaces are 0, and bombs are 1, if we go through and add the value
+  # given to the spot on the board to number of bombs, we get the number of bombs
+  # around it.
+  for r in board[start_row: row + 2]: # picks the touching cells left and right
+    for c in r[start_col: col + 2]: # picks the touching cells up and down
+      num_mines += c
   return num_mines
 
 def showBoard(board, tested_positions):
-  if FoundAllPositions(board, tested_positions):
-    if PlayAgain():
-      startGame()
-    else:
-      sys.exit()
-  else:
-    for r in range(len(board)):
-      row = board[r]
-      for c in range(len(row)):
-        position = [r, c]
-        if position in tested_positions:
-          print getNumMines(board, position),
-        else:
-          print '.',
-      print
+  for r in range(len(board)):
+    row = board[r]
+    for c in range(len(row)):
+      position = [r, c]
+      if position in tested_positions:
+        print getNumMinesAt(board, position),
+      else:
+        print '.',
+    print
   
 def showBombBoard(board):
   for r in range(len(board)):
@@ -94,16 +96,15 @@ def showBombBoard(board):
         print '.',
     print
   
-def FoundAllPositions(board, tested_positions):
-  all_positions = []
-  for r in range(len(board)):
-    row = board[r]
-    for c in range(len(row)):
-      if board[r][c] == 0:
-        all_positions.append([r, c])
-      else:
-        break
-  return tested_positions == all_positions 
+def foundAllPositions(board, tested_positions):
+  return len(tested_positions) == (ROWS * COLUMNS - MINES)
+  # all_positions = []
+  # for r in range(len(board)):
+  #   row = board[r]
+  #   for c in range(len(row)):
+  #     if board[r][c] == 0:
+  #       all_positions.append([r, c])
+  # return tested_positions == all_positions 
     
 def playAgain():
   print 'Would you like to play again? (yes o no)'
@@ -111,15 +112,32 @@ def playAgain():
 
 def startGame():  
   tested_positions = []
-  b = getBoard()
+  b = newBoard()
   showBoard(b, tested_positions)
   while True:
-    pos = getMove() 
-    isMoveValid(pos, tested_positions) 
-    isBomb(b, pos) 
-    getNumMines(b, pos) 
-    showBoard(b, tested_positions)
-        
+    print 'Tested positions:', tested_positions
+    pos = getMove()
+    if isValidMove(pos, tested_positions):
+      tested_positions.append(pos)
+    else:
+      continue
+    # Move is guaranteed to be valid now, check for bombs.
+    if isBomb(b, pos):
+      print 'You have hit a bomb!'
+      print 'YOU LOSE!!!'
+      showBombBoard(b)
+      if playAgain():
+        startGame()
+      else:
+        sys.exit(0)
+    openTrivialPositions(b, tested_positions, pos)
+    if foundAllPositions(b, tested_positions):
+      if playAgain():
+        startGame()
+      else:
+        sys.exit(0)
+    else:
+      showBoard(b, tested_positions)
+
 print 'MINESWEEPER'
 startGame()
-  
