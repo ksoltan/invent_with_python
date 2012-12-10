@@ -1,7 +1,7 @@
 # Trees made by recursion
 import sys
 
-TREELEN = 10
+__TREELEN__ = 10
 
 def getLadder(x): # ladder lik tree
   if x > TREELEN:
@@ -16,10 +16,10 @@ def getLadder(x): # ladder lik tree
 getLadder(1)
 
 def getTree(y):
-  if y > TREELEN:
+  if y > __TREELEN__:
     print
   else:
-    space = ((TREELEN - y) / 2) * '  '
+    space = ((__TREELEN__ - y) / 2) * '  '
     print space,
     for r in range(y):
       print '|', # or print r to print the actual numbers.
@@ -27,4 +27,3 @@ def getTree(y):
     getTree(y + 2)
 
 getTree(1)
-      
