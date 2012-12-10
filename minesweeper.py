@@ -2,9 +2,9 @@
 import random
 import sys
 
-ROWS = 5
-COLUMNS = 5
-MINES = 4
+ROWS = 7
+COLUMNS = 7
+MINES = 5
 
 def newBoard():
   mines = []
@@ -139,5 +139,6 @@ def startGame():
     else:
       showBoard(b, tested_positions)
 
-print 'MINESWEEPER'
-startGame()
+if __name__ == "__main__":
+  print 'MINESWEEPER'
+  startGame()
