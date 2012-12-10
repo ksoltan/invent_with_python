@@ -140,9 +140,9 @@ def whoGoesFirst():
   else:
     return 'player'
     
-  def playAgain():
-    print 'Do you want to play again? (yes or no)'
-    return raw_input().lower().startswith('y')
+def playAgain():
+  print 'Do you want to play again? (yes or no)'
+  return raw_input().lower().startswith('y')
     
 def makeMove(board, tile, xstart, ystart):
   # place tile on the board at xstart, ystart, and flip any of opponent's pieces
@@ -181,13 +181,15 @@ def getPlayerMove(board, playerTile):
     if len(move) == 2 and move[0] in DIGITS1TO8 and move[1] in DIGITS1TO8:
       x = int(move[0]) - 1
       y = int(move[1]) - 1
-      if isValidMove(board, playerTile, x, y) == False:
+      if not isValidMove(board, playerTile, x, y):
+        print 'Invalid move'
         continue
       else:
         break
     else:
       print 'That is not a valid move. Type the x digit (1-8), then the y digit (1-8).'
       print 'For example, 81 will be the top-right corner'
+  print 'Valid move'
   return [x, y]
 
 def getComputerMove(board, computerTile):
@@ -275,18 +277,3 @@ while True:
     
   if not playAgain():
     break    
-      
-    
-      
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
