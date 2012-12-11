@@ -3,6 +3,8 @@
 import random
 import sys
 
+BOARD_SIZE = 8
+
 def drawBoard(board): # prints out board that is passed. Returns None
   HLINE = '  +---+---+---+---+---+---+---+---+'
   VLINE = '  |   |   |   |   |   |   |   |   |'
@@ -20,8 +22,8 @@ def drawBoard(board): # prints out board that is passed. Returns None
 
 
 def resetBoard(board): # blanks out board it is passed, except for start positions
-  for x in range(8):
-    for y in range(8):
+  for x in range(BOARD_SIZE):
+    for y in range(BOARD_SIZE):
       board[x][y] = ' '
   
   # Starting positions:
@@ -30,69 +32,49 @@ def resetBoard(board): # blanks out board it is passed, except for start positio
   board[4][3] = 'O'
   board[4][4] = 'X'
 
-
 def getNewBoard(): # creates brabd new, blank board data structure
   board = []
-  for i in range(8):
-    board.append([' '] * 8)
-  
+  for i in range(BOARD_SIZE):
+    board.append([' '] * BOARD_SIZE)
   return board
-
 
 def isValidMove(board, tile, xstart, ystart):
   # Returns False if player's move is on space xstart, ystart is invalid
   # If is a valid move, returns list of spaces that would become player's
-    # if they made a move there
+  # if they made a move there
   if board[xstart][ystart] != ' ' or not isOnBoard(xstart, ystart):
     return False
-  
-  board[xstart][ystart] = tile #temporarily set tile on the board
   
   if tile == 'X':
     otherTile = 'O'
   else:
     otherTile = 'X'
-    
-  tilesToFlip = []
+  
   for xdirection, ydirection in [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]:
     x, y = xstart, ystart
-    x += xdirection # first step in direction
-    y += ydirection # first step in the direction
-    if isOnBoard(x, y) and board[x][y] == otherTile:
+    x += xdirection  # first step in direction
+    y += ydirection
+    foundOtherTiles = False
+    while isOnBoard(x, y) and board[x][y] == otherTile:
       # there is a piece belonging to the other player next to our piece
       x += xdirection
       y += ydirection
-      if not isOnBoard(x, y):
-        continue
-      while board[x][y] == otherTile:
-        x += xdirection
-        y += ydirection
-        if not isOnBoard(x, y): # break out of while loop, then continue in for loop
-          break
-      if not isOnBoard(x, y):
-        continue
-      if board[x][y] == tile:
-        # There are pieces to flip over. Go in the reverse direction until
-        # we reach the original space, noting all the tiles along the way.
-        while True:
-          x -= xdirection
-          y -= ydirection
-          if x == xstart and y == ystart:
-            break
-          tilesToFlip.append([x, y])
+      foundOtherTiles = True
+    if not isOnBoard(x, y):
+      # break out of while loop, then continue in for loop
+      continue
+    elif foundOtherTiles and board[x][y] == tile:
+      # If there are othertiles next to our move
+      return True
+  return False
     
-    board[xstart][ystart] = ' ' # restore the empty space
-    if len(tilesToFlip) == 0: # if no tiles were flipped, not a valid move
-      return False
-    return tilesToFlip
-    
-def isOnBoard(x, y): # returns True if coordinated located on Board
-  return x >= 0 and x <= 7 and y >= 0 and y <= 7
+def isOnBoard(x, y):
+  # returns True if coordinated located on Board
+  return 0 <= x and x < BOARD_SIZE and 0 <= y and y < BOARD_SIZE
   
 def getBoardWithValidMoves(board, tile): 
   # returns board with . marking valid moves a player can make
   dupeBoard = getBoardCopy(board)
-  
   for x, y in getValidMoves(dupeBoard, tile):
     dupeBoard[x][y] = '.'
   return dupeBoard
@@ -100,10 +82,9 @@ def getBoardWithValidMoves(board, tile):
 def getValidMoves(board, tile):
   # returns list of [x, y] lists of valid moves for given player on given board
   validMoves = []
-  
   for x in range(8):
     for y in range(8):
-      if isValidMove(board, tile, x, y) != False:
+      if isValidMove(board, tile, x, y):
         validMoves.append([x, y])
   return validMoves
   
@@ -145,16 +126,56 @@ def playAgain():
   return raw_input().lower().startswith('y')
     
 def makeMove(board, tile, xstart, ystart):
-  # place tile on the board at xstart, ystart, and flip any of opponent's pieces
-  tilesToFlip = isValidMove(board, tile, xstart, ystart)
+  if not isOnBoard(xstart, ystart):
+    return
+  else:
+    board[xstart][ystart] = tile
+
+  if tile == 'X':
+    otherTile = 'O'
+  else:
+    otherTile = 'X'
   
-  if tilesToFlip == False:
-    return False
-  
-  board[xstart][ystart] = tile
-  for x, y in tilesToFlip:
-    board[x][y] = tile
-  return True
+  for xdirection, ydirection in [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]:
+    x, y = xstart, ystart
+    x += xdirection  # first step in direction
+    y += ydirection
+    foundOtherTiles = []
+    while isOnBoard(x, y) and board[x][y] == otherTile:
+      # there is a piece belonging to the other player next to our piece
+      foundOtherTiles.append([x, y])
+      x += xdirection
+      y += ydirection
+    if not isOnBoard(x, y):
+      # break out of while loop, then continue in for loop
+      continue
+    elif board[x][y] == tile:
+      # We may have found other tiles to flip
+      for fx, fy in foundOtherTiles:
+        print 'Recursive move:', [fx, fy]
+        makeMove(board, tile, fx, fy)
+
+  for cx in range(BOARD_SIZE):
+    for cy in range(BOARD_SIZE):
+      if board[cx][cy] == tile:
+        for xdirection, ydirection in [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]:
+          x, y = cx, cy
+          x += xdirection  # first step in direction
+          y += ydirection
+          foundOtherTiles = []
+          while isOnBoard(x, y) and board[x][y] == otherTile:
+            # there is a piece belonging to the other player next to our piece
+            foundOtherTiles.append([x, y])
+            x += xdirection
+            y += ydirection
+          if not isOnBoard(x, y):
+            # break out of while loop, then continue in for loop
+            continue
+          elif board[x][y] == tile:
+            # We may have found other tiles to flip
+            for fx, fy in foundOtherTiles:
+              print 'Recursive scrape move:', [fx, fy]
+              makeMove(board, tile, fx, fy)
   
 def getBoardCopy(board): # duplicate board list and return duplicate
   dupeBoard = getNewBoard()
@@ -171,14 +192,15 @@ def getPlayerMove(board, playerTile):
   # let the player type in their move
   # returns move as [x, y] or returns string 'hints' or 'quit'
   DIGITS1TO8 = '1 2 3 4 5 6 7 8'.split()
+  x = y = -1
   while True:
     print 'Enter your move, or type quit to end the game, or hints to turn off/on hints.'
     move = raw_input().lower()
     if move == 'quit':
       return 'quit'
-    if move == 'hints':
+    elif move == 'hints':
       return 'hints'
-    if len(move) == 2 and move[0] in DIGITS1TO8 and move[1] in DIGITS1TO8:
+    elif len(move) == 2 and move[0] in DIGITS1TO8 and move[1] in DIGITS1TO8:
       x = int(move[0]) - 1
       y = int(move[1]) - 1
       if not isValidMove(board, playerTile, x, y):
@@ -213,67 +235,80 @@ def getComputerMove(board, computerTile):
       bestScore = score
   return bestMove
   
-def showPoints(playerTile, computerTile):
+def showPoints(mainBoard, playerTile, computerTile):
   # print out current score
   scores = getScoreOfBoard(mainBoard)
   print 'You have {0} points. The computer has {1} points.'.format(scores[playerTile], scores[computerTile])
   
-print 'Welcome to Reversi!'
-
-while True:
-  # reset the board and game
-  mainBoard = getNewBoard()
-  resetBoard(mainBoard)
-  playerTile, computerTile = enterPlayerTile()
-  showHints = False
-  turn = whoGoesFirst()
-  print 'The ' + turn + ' will go first.'
-  
+def main():
   while True:
-    if turn == 'player':
-      # Player's turn:
-      if showHints:
-        validMovesBoard = getBoardWithValidMoves(mainBoard, playerTile)
-        drawBoard(validMovesBoard)
+    # reset the board and game
+    mainBoard = getNewBoard()
+    resetBoard(mainBoard)
+    playerTile, computerTile = enterPlayerTile()
+    print 'Player tile', playerTile
+    print 'Computer tile', computerTile
+    showHints = False
+    turn = whoGoesFirst()
+    print 'The ' + turn + ' will go first.'
+  
+    while True:
+      if turn == 'player':
+        print 'Player turn.'
+        # Player's turn:
+        if showHints:
+          drawBoard(getBoardWithValidMoves(mainBoard, playerTile))
+        else:
+          drawBoard(mainBoard)
+        showPoints(mainBoard, playerTile, computerTile)
+        move = getPlayerMove(mainBoard, playerTile)
+        print 'Player move', move
+        if move == 'quit':
+          print 'Thanks for playing!'
+        elif move == 'hints':
+          showHints = not showHints
+          print 'Showing hints:', showHints
+          continue
+        else:
+          print 'Making move:', move
+          makeMove(mainBoard, playerTile, move[0], move[1])
+        if getValidMoves(mainBoard, computerTile) == []:
+          print 'No valid computer moves.  Ending game.'
+          break
+        else:
+          print 'Now computer turn.'
+          turn = 'computer'
       else:
+        print 'Computer turn.'
+        # Computer's turn:
         drawBoard(mainBoard)
-      showPoints(playerTile, computerTile)
-      move = getPlayerMove(mainBoard, playerTile)
-      if move == 'quit':
-        print 'Thanks for playing!'
-      elif move == 'hints':
-        showHints = not showHints
-        continue
-      else:
-        makeMove(mainBoard, playerTile, move[0], move[1])
-      if getValidMoves(mainBoard, computerTile) == []:
-        break
-      else:
-        turn = 'computer'
-        
-    else:
-      # Computer's turn:
-      drawBoard(mainBoard)
-      showPoints(playerTile, computerTile)
-      raw_input('Press enter to see the computer\'s move.')
-      x, y = getComputerMove(mainBoard, computerTile)
-      makeMove(mainBoard, computerTile, x, y)
+        showPoints(mainBoard, playerTile, computerTile)
+        raw_input("Press enter to see the computer's move.")
+        x, y = getComputerMove(mainBoard, computerTile)
+        print 'Computer move:', [x, y]
+        makeMove(mainBoard, computerTile, x, y)
       
-      if getValidMoves(mainBoard, playerTile) == []:
-        break
-      else:
-        turn = 'player'
+        if getValidMoves(mainBoard, playerTile) == []:
+          print 'No valid player moves.  Ending game.'
+          break
+        else:
+          print 'Now player turn.'
+          turn = 'player'
     
-  # Display the final score
-  drawBoard(mainBoard)
-  scores = getScoreOfBoard(mainBoard)
-  print 'X scored {0} points. O score {1} points'.format(scores['X'], scores['O'])
-  if scores[playerTile] > scores[computerTile]:
-    print 'You beat the computer by {0} points! Gratz!'.format(scores[playerTile] - scores[computerTile])
-  elif scores[playerTile] < scores[computerTile]:
-    print 'You lost. The computer beat you by {0} points'.format(scores[computerTile] - scores[playerTile])
-  else:
-    print 'The game was a tie!'
+    # Display the final score
+    drawBoard(mainBoard)
+    scores = getScoreOfBoard(mainBoard)
+    print 'X scored {0} points. O score {1} points'.format(scores['X'], scores['O'])
+    if scores[playerTile] > scores[computerTile]:
+      print 'You beat the computer by {0} points! Gratz!'.format(scores[playerTile] - scores[computerTile])
+    elif scores[playerTile] < scores[computerTile]:
+      print 'You lost. The computer beat you by {0} points'.format(scores[computerTile] - scores[playerTile])
+    else:
+      print 'The game was a tie!'
     
-  if not playAgain():
-    break    
+    if not playAgain():
+      break    
+
+if __name__ == '__main__':
+  print 'Welcome to Reversi!'
+  main()
