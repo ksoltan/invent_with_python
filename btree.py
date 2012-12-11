@@ -7,18 +7,18 @@ def Add(tree, value):
     return tree
   tree_value = tree[0]
   if tree_value == value:
-    return Add(tree[1], [value]) # creates a new brnch from this value, allowing for multiple branches
+    return Add(tree[1], [value]) # creates a new branch from this value, allowing for multiple branches
   else:
     return Add(tree[1], value)
 
 def Print(tree, indent):  
   if not tree:
     return
-  if len(str(tree[0])) == 1:
-    print '    ' * indent, tree[0]
-    Print(tree[1], indent + 1)
+  if len(tree[0]) == 1:
+    print '    ' * indent, tree[0],
+    Print(tree[1], indent)
   else:
-    Print (tree[0][0], indent + 1)
+    Print(tree[0], indent + 1)
   return tree
 
 def getTree(tree, word):
