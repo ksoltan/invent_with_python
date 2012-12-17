@@ -152,9 +152,10 @@ def makeMove(board, tile, xstart, ystart):
     elif board[x][y] == tile:
       # We may have found other tiles to flip
       for fx, fy in foundOtherTiles:
-        print 'Recursive move:', [fx, fy]
+        #print 'Recursive move:', [fx, fy]
         makeMove(board, tile, fx, fy)
 
+  # Recursive scrape
   for cx in range(BOARD_SIZE):
     for cy in range(BOARD_SIZE):
       if board[cx][cy] == tile:
@@ -174,7 +175,7 @@ def makeMove(board, tile, xstart, ystart):
           elif board[x][y] == tile:
             # We may have found other tiles to flip
             for fx, fy in foundOtherTiles:
-              print 'Recursive scrape move:', [fx, fy]
+              #print 'Recursive scrape move:', [fx, fy]
               makeMove(board, tile, fx, fy)
   
 def getBoardCopy(board): # duplicate board list and return duplicate
@@ -265,6 +266,7 @@ def main():
         print 'Player move', move
         if move == 'quit':
           print 'Thanks for playing!'
+          sys.exit(0)
         elif move == 'hints':
           showHints = not showHints
           print 'Showing hints:', showHints
@@ -285,7 +287,7 @@ def main():
         showPoints(mainBoard, playerTile, computerTile)
         raw_input("Press enter to see the computer's move.")
         x, y = getComputerMove(mainBoard, computerTile)
-        print 'Computer move:', [x, y]
+        print 'Computer move:', [x + 1, y + 1]
         makeMove(mainBoard, computerTile, x, y)
       
         if getValidMoves(mainBoard, playerTile) == []:
