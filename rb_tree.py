@@ -4,30 +4,28 @@ import random
 
 def Add(tree, value):
   # Stopping point for recursion
-  if not tree:
+  if not tree: # If the lis is empty
     tree.append(value)
-    tree.append([])
     tree.append([])
     return tree
 
-  tree_value = tree[0]
-  if tree_value == value:
-    return tree
-  else:
-    if tree_value < value:
-      return Add(tree[2], value)
-    else:
-      return Add(tree[1], value)
+#  tree_value = tree[0]
+  tree.append([])
+  return Add(tree[1], value)
+#  if tree_value < value:
+#      return Add(tree[2], value)
+#  else:
+#      return Add(tree[1], value)
       
 def Print(tree, indent):
   # Stopping point for recursion
-  if not tree:
-    return
+#  if not tree:
+#    return
 
-  Print(tree[2], indent + 1)
-  print '    ' * indent, tree[0]
-  Print(tree[1], indent + 1)
-
+#  Print(tree[2], indent + 1)
+#  print '    ' * indent, tree[0]
+#  Print(tree[1], indent + 1)
+  pass
 def main():
   words = '''ant antelope babook badger bear beaver camel cat clam
 cobra cougar coyote crow deer dog donkey duck eagle ferret
@@ -41,7 +39,7 @@ turtle weasel whale wolf wombat zebra'''.split()
     print 'Adding', w
     for c in w:
       Add(char_tree, c)
-  Print(char_tree, 0)
+  return char_tree
 
 if __name__ == "__main__":
     main()
