@@ -18,7 +18,7 @@ UPRIGHT = 9
 RIGHT = 6
 LEFT = 4
 
-MOVESPEED = 2
+MOVESPEED = 5
 
 # Set up the colors
 BLACK = (0, 0, 0)
@@ -95,7 +95,7 @@ while True:
     
     # Check if block hit white wall
     # Is the block hovering over the wall
-    if b['rect'].left in range(wallLeft, (wallRight + b['rect'].width)) or b['rect'].right in range((wallLeft - b['rect']. width), wallRight):
+    if b['rect'].left >= wallLeft + b['rect'].width and b['rect'].left <= wallRight:
       if b['rect'].bottom == wallTop:
       # check if block hit the wall from the top
         if b['dir'] == DOWNLEFT:
@@ -108,8 +108,8 @@ while True:
           b['dir'] = DOWNLEFT
         if b['dir'] == UPRIGHT:
           b['dir'] = DOWNRIGHT
-    # is the block touching the wall
-    if b['rect'].top in range((wallTop - b['rect'].height), wallBottom) or b['rect'].bottom in range(wallTop, (wallBottom + b['rect'].height)):
+    # is the block at the level of the wall
+    if b['rect'].top >= wallTop + b['rect'].height and b['rect'].top <= wallBottom:
     # check if block hit wall from the sides
       if b['rect'].left == wallRight:
         if b['dir'] == UPLEFT:
