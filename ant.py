@@ -65,7 +65,8 @@ def main():
   weights = []
   PrintPathsWeights(paths, 0, weights)
   weights.sort()
-  print weights
+  print min(weights)
+  print max(weights)
 
 if __name__ == '__main__':
   main()

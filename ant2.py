@@ -1,4 +1,13 @@
+# An ant leaves from the top left and wants to go to the bottom right corner. It can only move down or right. What is the minimum sum of the path it can take?
+
 import copy
+WEIGHTS = [
+    [  0, 44, 72, 91, 47, ],
+    [ 63, 50, 69, 33, 61, ],
+    [ 16, 35, 84, 57, 76, ],
+    [ 55, 88, 50, 35, 24, ],
+    [ 48, 66, 19, 41,  0 ]
+]
 
 def AddStepToPath(path, stop_idx):
   """docstring for AddStepToPath"""
@@ -30,15 +39,26 @@ def GenerateAllPaths(stop_idx):
     else:
       paths = new_paths
     # Debug output
-    for path in paths:
-      print path
+    #for path in paths:
+    #  print path
   return paths
+
+def CalculatePathWeight(path):
+  """docstring for CalculatePathWeights"""
+  sum_weights = 0
+  for step in path:
+    sum_weights += WEIGHTS[step[0]][step[1]]
+  return [sum_weights, path]
 
 def main(stop_idx):
   """docstring for main"""
   paths = GenerateAllPaths(stop_idx)
+  path_sums = []
   for path in paths:
-    print path
+    path_sums.append(CalculatePathWeight(path))
+  path_sums.sort(key = lambda elem: elem[1])
+  print 'The least weighted path is:', min(path_sums)
+  print 'The most weighted path is:', max(path_sums)
 
 if __name__ == '__main__':
   main(4)
