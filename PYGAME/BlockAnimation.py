@@ -18,7 +18,7 @@ UPRIGHT = 9
 RIGHT = 6
 LEFT = 4
 
-MOVESPEED = 4
+MOVESPEED = 2
 
 # Set up the colors
 BLACK = (0, 0, 0)
@@ -32,9 +32,16 @@ YELLOW = (255, 255, 0)
 b1 = {'rect' : pygame.Rect(300, 80, 55, 60), 'color' : RED, 'dir' : UPRIGHT}
 b2 = {'rect' : pygame.Rect(200, 250, 45, 30), 'color' : GREEN, 'dir' : UPLEFT}
 b3 = {'rect' : pygame.Rect(100, 150, 67, 60), 'color' : BLUE, 'dir' : DOWNLEFT}
-b4 = {'rect' : pygame.Rect(10, 300, 24, 45), 'color' : YELLOW, 'dir' : DOWNRIGHT}
-b5 = {'rect' : pygame.Rect(250, 340, 200, 10), 'color' : WHITE, 'dir' : RIGHT}
-blocks = [b1, b2, b3, b4]
+#b4 = {'rect' : pygame.Rect(10, 300, 24, 45), 'color' : YELLOW, 'dir' : DOWNRIGHT}
+blocks = [b1, b2, b3]
+
+# White wall-like block
+b5 = {'rect' : pygame.Rect(250, 340, 200, 10), 'color' : WHITE}
+wallBottom = b5['rect'].bottom
+wallTop = b5['rect'].top
+wallLeft = b5['rect'].left
+wallRight = b5['rect'].right
+
 
 # Run the game loop
 while True:
@@ -43,19 +50,9 @@ while True:
     if event.type == QUIT:
       pygame.quit()
       sys.exit(0)
- 
- 
+
   # Draw the black background onto the surface
   windowSurface.fill(BLACK)
-  # Draw white rectangle
-  if b5['dir'] == RIGHT:
-    b5['rect'].right += MOVESPEED
-    if b5['rect'].right > WINDOWWIDTH:
-      b5['dir'] = LEFT
-  if b5['dir'] == LEFT:
-    b5['rect'].left -= MOVESPEED
-    if b5['rect'].left < 0:
-      b['dir'] = RIGHT
   for b in blocks:
     # Move the block data structure
     if b['dir'] == DOWNLEFT:
@@ -96,6 +93,34 @@ while True:
       if b['dir'] == UPRIGHT:
         b['dir'] = UPLEFT
     
+    # Check if block hit white wall
+    # Is the block hovering over the wall
+    if b['rect'].left in range(wallLeft, (wallRight + b['rect'].width)) or b['rect'].right in range((wallLeft - b['rect']. width), wallRight):
+      if b['rect'].bottom == wallTop:
+      # check if block hit the wall from the top
+        if b['dir'] == DOWNLEFT:
+          b['dir'] = UPLEFT
+        if b['dir'] == DOWNRIGHT:
+          b['dir'] = UPRIGHT
+      if b['rect'].top == wallBottom:
+      # check if block hit the wall from the bottom
+        if b['dir'] == UPLEFT:
+          b['dir'] = DOWNLEFT
+        if b['dir'] == UPRIGHT:
+          b['dir'] = DOWNRIGHT
+    # is the block touching the wall
+    if b['rect'].top in range((wallTop - b['rect'].height), wallBottom) or b['rect'].bottom in range(wallTop, (wallBottom + b['rect'].height)):
+    # check if block hit wall from the sides
+      if b['rect'].left == wallRight:
+        if b['dir'] == UPLEFT:
+          b['dir'] = UPRIGHT
+        if b['dir'] == DOWNLEFT:
+          b['dir'] = DOWNRIGHT
+      if b['rect'].right == wallLeft:
+        if b['dir'] == UPRIGHT:
+          b['dir'] = UPLEFT
+        if b['dir'] == DOWNRIGHT:
+          b['dir'] = DOWNLEFT
     # Draw the blocks onto the surface
     pygame.draw.rect(windowSurface, b['color'], b['rect'])
   pygame.draw.rect(windowSurface, b5['color'], b5['rect'])
