@@ -33,7 +33,7 @@ def GenerateAllPaths(stop_idx):
     i += 1
     new_paths = []
     for path in paths:
-      new_paths += AddStepToPath(path, stop_idx)
+      new_paths += AddStepToPath(path, stop_idx) 
     if not new_paths:
       break
     else:
@@ -45,17 +45,14 @@ def GenerateAllPaths(stop_idx):
 
 def CalculatePathWeight(path):
   """docstring for CalculatePathWeights"""
-  sum_weights = 0
-  for step in path:
-    sum_weights += WEIGHTS[step[0]][step[1]]
-  return [sum_weights, path]
+  #for step in path:
+  #  sum_weights += WEIGHTS[step[0]][step[1]]
+  return [sum(WEIGHTS[step[0]][step[1]] for step in path), path]
 
 def main(stop_idx):
   """docstring for main"""
-  paths = GenerateAllPaths(stop_idx)
-  path_sums = []
-  for path in paths:
-    path_sums.append(CalculatePathWeight(path))
+  #paths = GenerateAllPaths(stop_idx)
+  path_sums = [CalculatePathWeight(path) for path in GenerateAllPaths(stop_idx)]
   path_sums.sort(key = lambda elem: elem[1])
   print 'The least weighted path is:', min(path_sums)
   print 'The most weighted path is:', max(path_sums)
