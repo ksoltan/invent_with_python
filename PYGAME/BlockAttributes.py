@@ -1,44 +1,12 @@
-import pygame, sys, time
-from pygame.locals import *
+# Common block actions for PYGAME
 
-# Set up pygame
-pygame.init()
-
-# Set up the window
-WINDOWWIDTH = 500
-WINDOWHEIGHT = 500
-windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32)
-pygame.display.set_caption('Animation')
-
-# Set up direction variables
+WINDOWWIDTH = 400
+WINDOWHEIGHT = 400
 DOWNLEFT = 1
 DOWNRIGHT = 3
 UPLEFT = 7
 UPRIGHT = 9
-RIGHT = 6
-LEFT = 4
-
-MOVESPEED = 4
-
-# Set up the colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-RED = (255, 0 , 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-YELLOW = (255, 255, 0)
-
-# Set up the block data structure
-b1 = {'rect' : pygame.Rect(300, 80, 55, 60), 'color' : RED, 'dir' : UPRIGHT}
-b2 = {'rect' : pygame.Rect(200, 250, 45, 30), 'color' : GREEN, 'dir' : UPLEFT}
-b3 = {'rect' : pygame.Rect(100, 150, 67, 60), 'color' : BLUE, 'dir' : DOWNLEFT}
-b4 = {'rect' : pygame.Rect(10, 300, 24, 45), 'color' : YELLOW, 'dir' : DOWNRIGHT}
-blocks = [b1, b2, b3, b4]
-
-# White wall-like block
-b5 = {'rect' : pygame.Rect(200, 200, 100, 140), 'color' : WHITE, 'dir' : UPRIGHT}
-b6 = {'rect' : pygame.Rect(300, 300, 140, 100), 'color' : WHITE, 'dir' : DOWNLEFT}
-walls = [b5, b6]
+MOVESPEED = 2
 
 def BounceDown(b):
   """docstring for BounceDown"""
@@ -148,13 +116,12 @@ def BounceOffBlock(b, wall):
     elif DoesRectTouchHorizontalLine(br, wt):
       b['dir'] = UPRIGHT
 
-def BlockIteration(b):
+def BlockIteration(b, walls):
   """BlockIteration moves block one step further,
   bounces it off wals and draws on the surface."""
   MoveBlock(b, MOVESPEED)
   BounceOffWalls(b)
-  # Check if blocks overlap with wall
-  #[BounceOffBlock(b, w) for w in walls]
+  [BounceOffBlock(b, w) for w in walls]
   #pygame.draw.rect(windowSurface, b['color'], b['rect'])
 
 def WallIteration(w):
@@ -162,21 +129,4 @@ def WallIteration(w):
   bounces it off wals and draws on the surface."""
   MoveBlock(w, 1)
   BounceOffWalls(w)
-  pygame.draw.rect(windowSurface, w['color'], w['rect'])
-
-# Run the game loop
-while True:
-  #Check for the QUIT EVENT
-  for event in pygame.event.get():
-   if event.type == QUIT:
-     pygame.quit()
-     sys.exit(0)
-
-  # Draw the black background onto the surface
-  windowSurface.fill(BLACK)
-  [BlockIteration(b) for b in blocks]
-  [WallIteration(w) for w in walls]
-
-  # Draw the window onto the screen
-  pygame.display.update()
-  time.sleep(0.02)
+  #pygame.draw.rect(windowSurface, w['color'], w['rect'])
