@@ -1,180 +1,249 @@
 import pygame, sys, random, time
 from pygame.locals import *
 
-def BounceDown(b):
-  """docstring for BounceDown"""
-  if b['dir'] == UPLEFT:
-    b['dir'] = DOWNLEFT
-  if b['dir'] == UPRIGHT:
-    b['dir'] = DOWNRIGHT
-  if b['dir'] == UP:
-    b['dir'] = DOWN
+class Block():
+  """docstring for Block"""
+  def __init__(self, rect, direction):
+    #super(Block, self).__init__()
+    self.rect = rect
+    self.dir = direction
+    
+  def BounceDown(self):
+    """docstring for BounceDown"""
+    if self.dir == UPLEFT:
+      self.dir = DOWNLEFT
+    if self.dir == UPRIGHT:
+      self.dir = DOWNRIGHT
+    if self.dir == UP:
+      self.dir = DOWN
 
-def BounceUp(b):
-  """docstring for BounceUp"""
-  if b['dir'] == DOWNLEFT:
-    b['dir'] = UPLEFT
-  if b['dir'] == DOWNRIGHT:
-    b['dir'] = UPRIGHT
-  if b['dir'] == DOWN:
-    b['dir'] = UP
+  def BounceUp(self):
+    """docstring for BounceUp"""
+    if self.dir == DOWNLEFT:
+      self.dir = UPLEFT
+    if self.dir == DOWNRIGHT:
+      self.dir = UPRIGHT
+    if self.dir == DOWN:
+      self.dir = UP
 
-def BounceRight(b):
-  """docstring for BounceRight"""
-  if b['dir'] == DOWNLEFT:
-    b['dir'] = DOWNRIGHT
-  if b['dir'] == UPLEFT:
-    b['dir'] = UPRIGHT
-  if b['dir'] == LEFT:
-    b['dir'] = RIGHT
+  def BounceRight(self):
+    """docstring for BounceRight"""
+    if self.dir == DOWNLEFT:
+      self.dir = DOWNRIGHT
+    if self.dir == UPLEFT:
+      self.dir = UPRIGHT
+    if self.dir == LEFT:
+      self.dir = RIGHT
 
-def BounceLeft(b):
-  """docstring for BonceLeft"""
-  if b['dir'] == DOWNRIGHT:
-    b['dir'] = DOWNLEFT
-  if b['dir'] == UPRIGHT:
-    b['dir'] = UPLEFT
-  if b['dir'] == RIGHT:
-    b['dir'] = LEFT
+  def BounceLeft(self):
+    """docstring for BonceLeft"""
+    if self.dir == DOWNRIGHT:
+      self.dir = DOWNLEFT
+    if self.dir == UPRIGHT:
+      self.dir = UPLEFT
+    if self.dir == RIGHT:
+      self.dir = LEFT
 
-def MoveBlock(b, speed):
-  """docstring for MoveBlock"""
-  if b['dir'] == DOWNLEFT:
-    b['rect'].left -= speed
-    b['rect'].top += speed
-  if b['dir'] == DOWNRIGHT:
-    b['rect'].left += speed
-    b['rect'].top += speed
-  if b['dir'] == UPLEFT:
-    b['rect'].left -= speed
-    b['rect'].top -= speed
-  if b['dir'] == UPRIGHT:
-    b['rect'].left += speed
-    b['rect'].top -= speed
-  if b['dir'] == UP:
-    b['rect'].top -= speed
-  if b['dir'] == DOWN:
-    b['rect'].top += speed
-  if b['dir'] == RIGHT:
-    b['rect'].left += speed
-  if b['dir'] == LEFT:
-    b['rect'].left -= speed
+  def MoveBlock(self, speed):
+    """docstring for MoveBlock"""
+    if self.dir == DOWNLEFT:
+      self.rect.left -= speed
+      self.rect.top += speed
+    if self.dir == DOWNRIGHT:
+      self.rect.left += speed
+      self.rect.top += speed
+    if self.dir == UPLEFT:
+      self.rect.left -= speed
+      self.rect.top -= speed
+    if self.dir == UPRIGHT:
+      self.rect.left += speed
+      self.rect.top -= speed
+    if self.dir == UP:
+      self.rect.top -= speed
+    if self.dir == DOWN:
+      self.rect.top += speed
+    if self.dir == RIGHT:
+      self.rect.left += speed
+    if self.dir == LEFT:
+      self.rect.left -= speed
 
-def BounceOffWalls(b):
-  """docstring for BounceOffWalls"""
-  if b['rect'].top < 0:
-    # block has moved past the top
-    BounceDown(b)
+  def BounceOffWalls(self):
+    """docstring for BounceOffWalls"""
+    if self.rect.top < 0:
+      # block has moved past the top
+      self.BounceDown()
 
-  if b['rect'].bottom > WINDOWHEIGHT:
-    # block has moved past the bottom
-    BounceUp(b)
-  if b['rect'].left < 0:
-    # block has moved passed the left side
-    BounceRight(b)
-  if b['rect'].right > WINDOWWIDTH:
-    # block has moved passed the right side
-    BounceLeft(b)
+    if self.rect.bottom > WINDOWHEIGHT:
+      # block has moved past the bottom
+      self.BounceUp()
+      
+    if self.rect.left < 0:
+      # block has moved passed the left side
+      self.BounceRight()
+    
+    if self.rect.right > WINDOWWIDTH:
+      # block has moved passed the right side
+      self.BounceLeft()
 
-def DoesRectTouchVerticalLine(b, vl):
-  """docstring for doRectanglesOverlap"""
-  if vl.right < b.left or b.right < vl.left:
-    return False
-  elif vl.top > b.bottom or b.top > vl.bottom:
-    return False
-  else:
-    return True
+  def DoesRectTouchVerticalLine(self, vl):
+    """docstring for doRectanglesOverlap"""
+    b = self.rect
+    if vl.right < b.left or b.right < vl.left:
+      return False
+    elif vl.top > b.bottom or b.top > vl.bottom:
+      return False
+    else:
+      return True
 
-def DoesRectTouchHorizontalLine(b, hl):
-  """docstring for doRectanglesOverlap"""
-  if hl.top > b.bottom or b.top > hl.bottom:
-    return False
-  elif hl.right < b.left or b.right < hl.left:
-    return False
-  else:
-    return True
+  def DoesRectTouchHorizontalLine(self, hl):
+    """docstring for doRectanglesOverlap"""
+    b = self.rect
+    if hl.top > b.bottom or b.top > hl.bottom:
+      return False
+    elif hl.right < b.left or b.right < hl.left:
+      return False
+    else:
+      return True
 
-def BounceOffBlock(b, wall):
-  """docstring for BounceOffBlock"""
-  br = b['rect']
-  w = wall['rect']
-  wl = pygame.Rect(w.left, w.top, 1, w.height)
-  wr = pygame.Rect(w.right, w.top, 1, w.height)
-  wt = pygame.Rect(w.left, w.top, w.width, 1)
-  wb = pygame.Rect(w.left, w.bottom, w.width, 1)
-  if b['dir'] == UPLEFT:
-    if DoesRectTouchVerticalLine(br, wr):
-      b['dir'] = UPRIGHT
-    elif DoesRectTouchHorizontalLine(br, wb):
-      b['dir'] = DOWNLEFT
+  def BounceOffBlock(self, wall):
+    """docstring for BounceOffBlock"""
+    br = self.rect
+    w = wall.rect
+    wl = pygame.Rect(w.left, w.top, 1, w.height)
+    wr = pygame.Rect(w.right, w.top, 1, w.height)
+    wt = pygame.Rect(w.left, w.top, w.width, 1)
+    wb = pygame.Rect(w.left, w.bottom, w.width, 1)
+    if self.dir == UPLEFT:
+      if self.DoesRectTouchVerticalLine(wr):
+        self.dir = UPRIGHT
+      elif self.DoesRectTouchHorizontalLine(wb):
+        self.dir = DOWNLEFT
 
-  if b['dir'] == UPRIGHT:
-    if DoesRectTouchVerticalLine(br, wl):
-      b['dir'] = UPLEFT
-    elif DoesRectTouchHorizontalLine(br, wb):
-      b['dir'] = DOWNRIGHT
+    if self.dir == UPRIGHT:
+      if self.DoesRectTouchVerticalLine(wl):
+        self.dir = UPLEFT
+      elif self.DoesRectTouchHorizontalLine(wb):
+        self.dir = DOWNRIGHT
 
-  if b['dir'] == DOWNLEFT:
-    if DoesRectTouchVerticalLine(br, wr):
-      b['dir'] = DOWNRIGHT
-    elif DoesRectTouchHorizontalLine(br, wt):
-      b['dir'] = UPLEFT
+    if self.dir == DOWNLEFT:
+      if self.DoesRectTouchVerticalLine(wr):
+        self.dir = DOWNRIGHT
+      elif self.DoesRectTouchHorizontalLine(wt):
+        self.dir = UPLEFT
 
-  if b['dir'] == DOWNRIGHT:
-    if DoesRectTouchVerticalLine(br, wl):
-      b['dir'] = DOWNLEFT
-    elif DoesRectTouchHorizontalLine(br, wt):
-      b['dir'] = UPRIGHT
+    if self.dir == DOWNRIGHT:
+      if self.DoesRectTouchVerticalLine(wl):
+        self.dir = DOWNLEFT
+      elif self.DoesRectTouchHorizontalLine(wt):
+        self.dir = UPRIGHT
 
-def BlockIteration(b, walls):
-  """BlockIteration moves block one step further,
-  bounces it off wals and draws on the surface."""
-  MoveBlock(b, MOVESPEED)
-  BounceOffWalls(b)
-  [BounceOffBlock(b, w) for w in walls]
+  def BlockIteration(self, walls):
+    """BlockIteration moves block one step further,
+    bounces it off wals and draws on the surface."""
+    self.MoveBlock(MOVESPEED)
+    self.BounceOffWalls()
+    [self.BounceOffBlock(w) for w in walls]
+    pygame.draw.rect(windowSurface, GREEN, self.rect)
+    
+  def WallIteration(self):
+    """BlockIteration moves block one step further,
+    bounces it off wals and draws on the surface."""
+    self.MoveBlock(EVILSPEED)
+    self.BounceOffWalls()
+    pygame.draw.rect(windowSurface, RED, self.rect)
 
-def WallIteration(w):
-  """BlockIteration moves block one step further,
-  bounces it off wals and draws on the surface."""
-  MoveBlock(w, EVILSPEED)
-  BounceOffWalls(w)
+class Player():
+  """docstring for Player"""
+  def __init__(self, player):
+    #super(Player, self).__init__()
+    self.player = player
+    
+  def MovePlayerLeft(self):
+    """docstring for MovePlayerLeft"""
+    moveRight = False
+    moveLeft = True
+  def MovePlayerRight(self):
+    """docstring for MovePlayerRight"""
+    moveRight = True
+    moveLeft = False
 
-def MovePlayerLeft():
-  """docstring for MovePlayerLeft"""
-  moveRight = False
-  moveLeft = True
-def MovePlayerRight():
-  """docstring for MovePlayerRight"""
-  moveRight = True
-  moveLeft = False
+  def MovePlayerUp(self):
+    """docstring for MovePlayerUp"""
+    moveDown = False
+    moveUp = True
 
-def MovePlayerUp():
-  """docstring for MovePlayerUp"""
-  moveDown = False
-  moveUp = True
+  def MovePlayerDown(self):
+    """docstring for MovePlayerDown"""
+    moveDown = True
+    moveUp = False
 
-def MovePlayerDown():
-  """docstring for MovePlayerDown"""
-  moveDown = True
-  moveUp = False
+  def PlayerMove(self, windowSurface):
+    if moveDown and self.player.bottom < WINDOWHEIGHT:
+      self.player.top += MOVESPEED
+    elif moveUp and self.player.top > 0:
+      self.player.top -= MOVESPEED
+    elif moveLeft and self.player.left > 0:
+      self.player.left -= MOVESPEED
+    elif moveRight and self.player.right < WINDOWWIDTH:
+      self.player.right += MOVESPEED
+    windowSurface.blit(current_player_image, self.player)
 
-def MovePlayer():
-  if moveDown and player.bottom < WINDOWHEIGHT:
-    player.top += MOVESPEED
-  elif moveUp and player.top > 0:
-    player.top -= MOVESPEED
-  elif moveLeft and player.left > 0:
-    player.left -= MOVESPEED
-  elif moveRight and player.right < WINDOWWIDTH:
-    player.right += MOVESPEED
+def AddMoreFood():
+  if len(food_blocks) < 40:
+    for i in range(5):
+      food_blocks.append({'rect' : pygame.Rect(random.randint(0, WINDOWWIDTH - FOODSIZE), random.randint(0, WINDOWHEIGHT - FOODSIZE), FOODSIZE, FOODSIZE + 10), 'dir' : direction[random.randint(0, 3)]})
+
+def GameIteration():
+  windowSurface.fill(BLACK)
+  [e.WallIteration() for e in evil_blocks]
+  player.PlayerMove(windowSurface)
+  IfAllFoodEaten()
+  [f.BlockIteration(evil_blocks) for f in food_blocks[:]]
+  PickUpFood()
+  DrawFoodNumber()
+  IfCollidesWithEvil()
+  pygame.display.update()
+  mainClock.tick(40)
+  
+def IfCollidesWithEvil():
+  '''If the player bumps into evil red block, the game is lost.'''
+  for e in evil_blocks:
+    if player.player.colliderect(e.rect):
+      windowSurface.blit(lose_text, lose_textRect)
+      pygame.display.update()
+      time.sleep(2)
+      pygame.quit()
+      sys.exit(0)
+
+def IfAllFoodEaten():
+  '''If all food is eaten, the game is won.'''
+  if not food_blocks:
+    windowSurface.blit(win_text, win_textRect)
+    pygame.display.update()
+    time.sleep(3)
+    pygame.quit()
+    sys.exit(0)
+  
+def PickUpFood():
+  global FOODEATEN
+  for f in food_blocks[:]:
+    if player.player.colliderect(f.rect):
+      food_blocks.remove(f)
+      FOODEATEN += 1
+      pickUpSound.play()
+      windowSurface.blit(playerStretchedImageBite, player.player)
+
+def DrawFoodNumber():
+  food_text = basicFont.render('{0}'.format(FOODNUMBER - len(food_blocks)), True, WHITE)
+  food_textRect = food_text.get_rect()
+  windowSurface.blit(food_text, food_textRect)
 
 pygame.init()
-
-# Set up the window
 WINDOWWIDTH = 700
 WINDOWHEIGHT = 700
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32)
-pygame.display.set_caption('Food and Evil')
+pygame.display.set_caption('Food and Evil: LEVEL 1')
+LEVEL = 1
 mainClock = pygame.time.Clock()
 
 # Direction variables
@@ -202,30 +271,28 @@ pygame.mixer.music.load('chase.wav')
 pygame.mixer.music.play(-1, 0.0)
 
 # Food Data structure
-FOODNUMBER = 40
+FOODNUMBER = 50
 FOODEATEN = 0
-foodCounter = 0
 FOODSIZE = 20
 food_blocks = []
 for i in range(FOODNUMBER):
-  food_blocks.append({'rect' : pygame.Rect(random.randint(0, WINDOWWIDTH - FOODSIZE), random.randint(0, WINDOWHEIGHT - FOODSIZE), FOODSIZE, FOODSIZE + 10), 'dir' : direction[random.randint(0, 3)]})
+  food_blocks.append(Block(pygame.Rect(random.randint(0, WINDOWWIDTH - FOODSIZE), random.randint(0, WINDOWHEIGHT - FOODSIZE), FOODSIZE, FOODSIZE + 10), direction[random.randint(0, 3)]))
 
 # Evil red block
-evil1 = {'rect': pygame.Rect(100, 40, 40, 50), 'dir' : UPRIGHT}
-evil2 = {'rect': pygame.Rect(50, 400, 40, 50), 'dir' : UPLEFT}
-evil3 = {'rect': pygame.Rect(100, 37, 40, 50), 'dir' : DOWNLEFT}
-evil4 = {'rect': pygame.Rect(15, 490, 40, 50), 'dir' : DOWNRIGHT}
-evil5 = {'rect': pygame.Rect(100, 30, 40, 50), 'dir' : RIGHT}
-evil6 = {'rect': pygame.Rect(200, 490, 40, 50), 'dir' : DOWN}
+evil1 = Block(pygame.Rect(100, 40, 40, 50), UPRIGHT)
+evil2 = Block(pygame.Rect(50, 400, 40, 50), UPLEFT)
+evil3 = Block(pygame.Rect(100, 37, 40, 50), DOWNLEFT)
+evil4 = Block(pygame.Rect(15, 490, 40, 50), DOWNRIGHT)
+evil5 = Block(pygame.Rect(100, 30, 40, 50), RIGHT)
+evil6 = Block(pygame.Rect(200, 490, 40, 50), DOWNRIGHT)
 evil_blocks = [evil1, evil2, evil3, evil4, evil5, evil6]
 
 # Player
-player = pygame.Rect(300, 100, 50, 50)
+player = Player(pygame.Rect(300, 100, 50, 50))
 playerImage = pygame.image.load('yellowcircle2.png')
 playerImageBite = pygame.image.load('yellowbitecircle2.png')
 playerStretchedImage = pygame.transform.scale(playerImage, (50, 50))
 playerStretchedImageBite = pygame.transform.scale(playerImageBite, (50, 50))
-
 playerBiteRight = playerStretchedImageBite
 playerBiteUp = pygame.transform.rotate(playerBiteRight, 90)
 playerBiteLeft = pygame.transform.rotate(playerBiteUp, 90)
@@ -238,7 +305,7 @@ moveDown = False
 current_player_image = playerBiteRight
  
 MOVESPEED = 5
-EVILSPEED = 4
+EVILSPEED = 5
 
 # Text
 basicFont = pygame.font.SysFont(None, 48)
@@ -286,43 +353,4 @@ while True:
         moveUp = False
       if event.key == K_DOWN or event.key == ord('s'):
           moveDown = False
-  windowSurface.fill(BLACK)
-  [WallIteration(e) for e in evil_blocks]
-  [pygame.draw.rect(windowSurface, RED, e['rect']) for e in evil_blocks]
-  MovePlayer(moveDown, moveUp, moveRight, moveLeft)
-  #pygame.draw.rect(windowSurface, WHITE, player)
-  windowSurface.blit(current_player_image, player)
-  if not food_blocks:
-    windowSurface.blit(win_text, win_textRect)
-    pygame.display.update()
-    time.sleep(3)
-    pygame.quit()
-    sys.exit(0)
-  # if len(food_blocks) < 40:
-  #   for i in range(5):
-  #     food_blocks.append({'rect' : pygame.Rect(random.randint(0, WINDOWWIDTH - FOODSIZE), random.randint(0, WINDOWHEIGHT - FOODSIZE), FOODSIZE, FOODSIZE + 10), 'dir' : direction[random.randint(0, 3)]})
-  for f in food_blocks:
-    BlockIteration(f, evil_blocks)
-# Check if player intersected with food
-  for f in food_blocks[:]:
-    if player.colliderect(f['rect']):
-      food_blocks.remove(f)
-      FOODEATEN += 1
-      pickUpSound.play()
-      windowSurface.blit(playerStretchedImageBite, player)        
-  food_text = basicFont.render('{0}'.format(FOODEATEN), True, WHITE)
-  food_textRect = food_text.get_rect()
-  windowSurface.blit(food_text, food_textRect)
-  for e in evil_blocks:
-    if player.colliderect(e['rect']):
-      windowSurface.blit(lose_text, lose_textRect)
-      pygame.display.update()
-      time.sleep(2)
-      pygame.quit()
-      sys.exit(0)
-  # Draw food
-  for f in food_blocks:
-    pygame.draw.rect(windowSurface, GREEN, f['rect'])
-
-  pygame.display.update()
-  mainClock.tick(40)
+  GameIteration()
