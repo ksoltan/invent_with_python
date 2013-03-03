@@ -201,15 +201,15 @@ class Player():
   def StopMoveLeft(self):
     """docstring for MovePlayerLeft"""
     self.moveLeft = False
-
+  
   def StopMoveRight(self):
     """docstring for MovePlayerRight"""
     self.moveRight = False
-
+  
   def StopMoveUp(self):
     """docstring for MovePlayerUp"""
     self.moveUp = False
-
+  
   def StopMoveDown(self):
     """docstring for MovePlayerDown"""
     self.moveDown = False
@@ -225,41 +225,94 @@ class Player():
       self.rect.right += speed
     self.windowSurface.blit(self.current_player_image, self.rect)
 
+class Text():
+  """docstring for Text"""
+  def __init__(self, message, windowSurface):
+    #super(Text, self).__init__()
+    self.message = message
+    self.windowSurface = windowSurface
+    self.message_box = self.message.get_rect()
+    self.message_box.centerx = self.windowSurface.get_rect().centerx
+    self.message_box.centery = self.windowSurface.get_rect().centery
+  
+  def Display(self):
+    self.windowSurface.blit(self.message, self.message_box)
+
+# class Level():
+#   """docstring for Level"""
+#   def __init__(self, level):
+#     #super(Level, self).__init__()
+#     self.level = level
+# 
+#   def One():
+#     self.evil_speed = 1
+#     self.evil_block_number = 4
+#   
+#   def Two():
+#     self.evil_speed = 2
+#     self.evil_block_number = 4
+#   
+#   def Three():
+#     self.evil_speed = 3
+#     self.evil_block_number = 4
+# 
+#   def Four():
+#     self.evil_speed = 3
+#     self.evil_block_number = 5
+
 class Game():
   """docstring for Game"""
   def __init__(self, windowSurface, food_blocks, evil_blocks, player_rect):
     #super(Game, self).__init__()
-    self.food_blocks_orig = food_blocks
-    self.evil_blocks_orig = evil_blocks
+    self.food_blocks = food_blocks[:]
+    self.evil_blocks = evil_blocks[:]
     self.player_rect_orig = player_rect
     self.windowSurface = windowSurface
     self.level = 1
+    self.evil_speed = 3
     self.food_speed = 5
+    self.food_eaten = 0
     self.player = Player(self.windowSurface, self.player_rect_orig)
-    self.LevelUp()
-  
+    self.Messages()
+    
+  def Messages(self):
+    self.lose_text = Text(basicFont.render('YOU LOSE!', True, RED), self.windowSurface)
+    self.win_text = Text(basicFont.render('YOU WIN!', True, WHITE), self.windowSurface)
+
   def Iteration(self):
     self.windowSurface.fill(BLACK)
     [e.WallIteration(self.windowSurface, self.evil_speed) for e in self.evil_blocks]
     self.player.PlayerMove(self.food_speed)
     if self.AllFoodEaten():
-      self.Finish(win_text, win_textRect)
+      self.LevelUp(direction)
     [f.BlockIteration(self.windowSurface, self.evil_blocks, self.food_speed) for f in self.food_blocks[:]]
-    if self.MaybeEatFood():
-      self.MaybeUpLevel()
-    self.DrawFoodNumber()
+    self.MaybeEatFood()
+    self.DrawFoodEaten()
     if self.CollidesWithEvil():
-      self.Finish(lose_text, lose_textRect)
+      self.lose_text.Display()
+      self.Finish()
     pygame.display.update()
     mainClock.tick(40)
     
-  def Finish(self, message, rect):
-    self.windowSurface.blit(message, rect)
+  def Finish(self):
     pygame.display.update()
     time.sleep(2)
     pygame.quit()
     sys.exit(0)
-    
+  
+  def LevelUp(self, direction):
+    self.level += 1
+    self.level_up_text = Text(basicFont.render('LEVEL {0}'.format(self.level), True, WHITE), self.windowSurface)
+    self.level_up_text.Display()
+    pygame.display.update()
+    time.sleep(2)
+    for i in range(FOODNUMBER):
+      d = direction[random.randint(0, 3)]
+      self.food_blocks.append(Block.InitWithBounds(x_range, y_range, FOODSIZE, d))
+    self.evil_speed += 1
+    self.food_eaten = 0
+    pygame.display.update()
+
   def CollidesWithEvil(self):
     '''If the player bumps into evil red block, the game is lost.'''
     for e in self.evil_blocks:
@@ -270,10 +323,6 @@ class Game():
   def AllFoodEaten(self):
     '''Returns True if all food is eaten, False otherwise.'''
     return not self.food_blocks
-    
-  def MaybeUpLevel(self):
-    if self.food_eaten > 10:
-      self.LevelUp()
 
   def MaybeEatFood(self):
     ate_some_food = False
@@ -290,17 +339,11 @@ class Game():
     pickUpSound.play()
     self.windowSurface.blit(playerStretchedImageBite, self.player.rect)
 
-  def DrawFoodNumber(self):
-    food_text = basicFont.render('{0}'.format(FOODNUMBER - len(food_blocks)), True, WHITE)
+  def DrawFoodEaten(self):
+    food_text = basicFont.render('{0}'.format(self.food_eaten), True, WHITE)
     food_textRect = food_text.get_rect()
     self.windowSurface.blit(food_text, food_textRect)
-  
-  def LevelUp(self):
-    self.evil_blocks = self.evil_blocks_orig[:]
-    self.food_eaten = 0
-    self.food_blocks = self.food_blocks_orig[:]
-    self.level += 1
-    self.evil_speed = math.log1p(self.level)
+
 
 pygame.init()
 WINDOWWIDTH = 700
@@ -334,7 +377,7 @@ pygame.mixer.music.load('chase.wav')
 pygame.mixer.music.play(-1, 0.0)
 
 # Food Data structure
-FOODNUMBER = 50
+FOODNUMBER = 10
 FOODSIZE = 20
 food_blocks = []
 x_range = WINDOWWIDTH - FOODSIZE
@@ -365,14 +408,14 @@ playerBiteDown = pygame.transform.rotate(playerBiteLeft, 90)
 
 # Text
 basicFont = pygame.font.SysFont(None, 48)
-win_text = basicFont.render('YOU WIN!', True, WHITE)
-win_textRect = win_text.get_rect()
-win_textRect.centerx = windowSurface.get_rect().centerx
-win_textRect.centery = windowSurface.get_rect().centery
-lose_text = basicFont.render('YOU LOSE!', True, RED)
-lose_textRect = lose_text.get_rect()
-lose_textRect.centerx = windowSurface.get_rect().centerx
-lose_textRect.centery = windowSurface.get_rect().centery
+# win_text = basicFont.render('YOU WIN!', True, WHITE)
+# win_textRect = win_text.get_rect()
+# win_textRect.centerx = windowSurface.get_rect().centerx
+# win_textRect.centery = windowSurface.get_rect().centery
+# lose_text = basicFont.render('YOU LOSE!', True, RED)
+# lose_textRect = lose_text.get_rect()
+# lose_textRect.centerx = windowSurface.get_rect().centerx
+# lose_textRect.centery = windowSurface.get_rect().centery
 
 def main():
   """docstring for main"""
