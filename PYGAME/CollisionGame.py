@@ -285,7 +285,9 @@ evil3 = Block(pygame.Rect(100, 37, 40, 50), DOWNLEFT)
 evil4 = Block(pygame.Rect(15, 490, 40, 50), DOWNRIGHT)
 evil5 = Block(pygame.Rect(100, 30, 40, 50), RIGHT)
 evil6 = Block(pygame.Rect(200, 490, 40, 50), DOWNRIGHT)
-evil_blocks = [evil1, evil2, evil3, evil4, evil5, evil6]
+evil7 = Block(pygame.Rect(200, 490, 40, 50), DOWNLEFT)
+evil8 = evil7 = Block(pygame.Rect(200, 490, 40, 50), DOWN)
+evil_blocks = [evil1, evil2, evil3, evil4, evil5, evil6, evil7, evil8]
 
 # Player
 player = Player(pygame.Rect(300, 100, 50, 50))
@@ -305,7 +307,7 @@ moveDown = False
 current_player_image = playerBiteRight
  
 MOVESPEED = 5
-EVILSPEED = 5
+EVILSPEED = 6
 
 # Text
 basicFont = pygame.font.SysFont(None, 48)
