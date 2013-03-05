@@ -238,28 +238,6 @@ class Text():
   def Display(self):
     self.windowSurface.blit(self.message, self.message_box)
 
-# class Level():
-#   """docstring for Level"""
-#   def __init__(self, level):
-#     #super(Level, self).__init__()
-#     self.level = level
-# 
-#   def One():
-#     self.evil_speed = 1
-#     self.evil_block_number = 4
-#   
-#   def Two():
-#     self.evil_speed = 2
-#     self.evil_block_number = 4
-#   
-#   def Three():
-#     self.evil_speed = 3
-#     self.evil_block_number = 4
-# 
-#   def Four():
-#     self.evil_speed = 3
-#     self.evil_block_number = 5
-
 class Game():
   """docstring for Game"""
   def __init__(self, windowSurface, food_blocks, evil_blocks, player_rect):
@@ -284,6 +262,9 @@ class Game():
     [e.WallIteration(self.windowSurface, self.evil_speed) for e in self.evil_blocks]
     self.player.PlayerMove(self.food_speed)
     if self.AllFoodEaten():
+      if self.level == 3:
+        self.win_text.Display()
+        self.Finish()
       self.LevelUp(direction)
     [f.BlockIteration(self.windowSurface, self.evil_blocks, self.food_speed) for f in self.food_blocks[:]]
     self.MaybeEatFood()
@@ -302,14 +283,14 @@ class Game():
   
   def LevelUp(self, direction):
     self.level += 1
-    self.level_up_text = Text(basicFont.render('LEVEL {0}'.format(self.level), True, WHITE), self.windowSurface)
-    self.level_up_text.Display()
+    level_up_text = Text(basicFont.render('LEVEL {0}'.format(self.level), True, WHITE), self.windowSurface)
+    level_up_text.Display()
     pygame.display.update()
     time.sleep(2)
     for i in range(FOODNUMBER):
       d = direction[random.randint(0, 3)]
       self.food_blocks.append(Block.InitWithBounds(x_range, y_range, FOODSIZE, d))
-    self.evil_speed += 1
+    self.evil_speed += 0.5
     self.food_eaten = 0
     pygame.display.update()
 
