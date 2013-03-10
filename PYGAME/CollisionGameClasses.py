@@ -22,9 +22,9 @@ class Block():
     """docstring for BounceDown"""
     if self.dir == UPLEFT:
       self.dir = DOWNLEFT
-    if self.dir == UPRIGHT:
+    elif self.dir == UPRIGHT:
       self.dir = DOWNRIGHT
-    if self.dir == UP:
+    elif self.dir == UP:
       self.dir = DOWN
 
   def BounceUp(self):
@@ -262,7 +262,7 @@ class Game():
     [e.WallIteration(self.windowSurface, self.evil_speed) for e in self.evil_blocks]
     self.player.PlayerMove(self.food_speed)
     if self.AllFoodEaten():
-      if self.level == 3:
+      if self.level == 4:
         self.win_text.Display()
         self.Finish()
       self.LevelUp(direction)
