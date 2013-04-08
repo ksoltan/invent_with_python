@@ -128,7 +128,7 @@ class BlockBounceOffBlockTest(unittest.TestCase):
     self.mox.VerifyAll()
     self.assertEqual(UPRIGHT, b.dir)
 
-class testBlockTouchesLine(unittest.TestCase):
+class TestBlockTouchesLine(unittest.TestCase):
   def setUp(self):
     self.b = Block.InitWithRect(pygame.Rect(10, 5, 100, 50), DOWNLEFT)
 
