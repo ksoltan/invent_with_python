@@ -3,29 +3,9 @@ import unittest
 import random
 from list_sorter import *
 
-# class ListSorterTest(unittest.TestCase):
-#   def setUp(self):
-#     self.sorter = ListSorter()
-# 
-#   def testRecursiveBubbleSortMin(self):
-#     l = [3, 5, 1, 4, 2]
-#     self.assertEqual([1, 2, 3, 4, 5], self.sorter.RecursiveBubbleSortMin(l))
-# 
-#   def testRecursiveBubbleSortMax(self):
-#     l = [3, 5, 1, 4, 2]
-#     self.assertEqual([1, 2, 3, 4, 5], self.sorter.RecursiveBubbleSortMax(l))
-# 
-#   def testBubbleSort(self):
-#     l = [3, 5, 1, 4, 2]
-#     self.assertEqual([1, 2, 3, 4, 5], self.sorter.BubbleSort(l))
-# 
-#   def testRecursiveMergeSort(self):
-#     l = [3, 5, 1, 4, 2]
-#     self.assertEqual([1, 2, 3, 4, 5], self.sorter.RecursiveMergeSort(l))
-
 class ListSorterExtremeTest(unittest.TestCase):
   def setUp(self):
-    self.range = 100
+    self.range = 200
     self.l = range(self.range)
     random.shuffle(self.l)
     self.sorter = ListSorter()
@@ -55,10 +35,23 @@ class ListSorterExtremeTest(unittest.TestCase):
     self.assertEqual(range(self.range), sorted_list)
     print "RecursiveRandomSort:", complexity
 
-  def testRecursiveInsertionSort(self):
+  def testInsertionSort(self):
     sorted_list, complexity = self.sorter.InsertionSort(self.l)
     self.assertEqual(range(self.range), sorted_list)
     print "InsertionSort:", complexity
+
+  def testRecursiveInsertionSort(self):
+    # sorted_list, complexity = self.sorter.RecursiveInsertionSort([3, 4, 1, 2])
+    # self.assertEqual([1, 2, 3, 4], sorted_list)
+    # print "RecursiveInsertionSort:", complexity
+    sorted_list, complexity = self.sorter.RecursiveInsertionSort(self.l)
+    self.assertEqual(range(self.range), sorted_list)
+    print "RecursiveInsertionSort:", complexity
+  
+  def testRecursiveQuicksort(self):
+    sorted_list, complexity = self.sorter.RecursiveQuicksort(self.l)
+    self.assertEqual(range(self.range), sorted_list)
+    print "RecursiveQuicksort:", complexity
 
 if __name__ == '__main__':
     unittest.main()

@@ -141,10 +141,52 @@ class ListSorter():
         j -= 1
       # When the value is greater than j, return its position to be just after j
       l[j + 1] = val
-    return l , algorithm_complexity
+    return l, algorithm_complexity
 
-
-
-
-
-
+  def RecursiveInsertionSort(self, unsorted_list):
+    sorted_list = unsorted_list[:1]
+    algorithm_complexity = self.__RecursiveInsertionSort(sorted_list,
+                                                         unsorted_list[1:])
+    return (sorted_list, algorithm_complexity)
+    
+  def __RecursiveInsertionSort(self, sorted_list, unsorted_list):
+    algorithm_complexity = 0
+    
+    if not unsorted_list:
+      return algorithm_complexity
+    current = unsorted_list[0]
+    algorithm_complexity += 2
+    
+    j = len(sorted_list) - 1
+    sorted_list.append(current)
+    while j >= 0 and current < sorted_list[j]:
+      # If the value is less than j, change j's index to the value's,
+      # switching their spots.
+      # Pick the next j value which is one less than the previous j.
+      sorted_list[j + 1] = sorted_list[j]
+      algorithm_complexity += 2
+      j -= 1
+    sorted_list[j + 1] = current
+    
+    algorithm_complexity += self.__RecursiveInsertionSort(sorted_list,
+                                                          unsorted_list[1:])
+    return algorithm_complexity
+  
+  # Returns (sorted list, complexity)
+  def RecursiveQuicksort(self, l):
+    algorithm_complexity = 0
+    if len(l) <= 1:
+      return l, algorithm_complexity
+    pivot_idx = random.randint(0, len(l) - 1)
+    less = []
+    greater = []
+    for i in l:
+      if i <= l[pivot_idx]:
+        less.append(i)
+      else:
+        greater.append(i)
+      algorithm_complexity += 2
+    l_less, a = self.RecursiveQuicksort(less)
+    l_greater, b = self.RecursiveQuicksort(greater)
+    
+    return l_less + l_greater, (algorithm_complexity + a + b)

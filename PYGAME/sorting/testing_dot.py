@@ -164,7 +164,26 @@ class BubbleSort():
         j -= 1
       # When the value is greater than j, return its position to be just after j
       l[j + 1] = val
+      self.animation.Display(l, 0)
     return l , algorithm_complexity
+
+  def RecursiveQuicksort(self, l, indent):
+    if len(l) <= 1:
+      return l
+    pivot = random.randint(0, len(l) - 1)
+    less = []
+    greater = []
+    for i in l:
+      if i <= l[pivot]:
+        less.append(i)
+        self.animation.Display(less, indent)
+      else:
+        greater.append(i)
+        self.animation.Display(greater, len(less))
+    l_less = self.RecursiveQuicksort(less, indent)
+    l_greater = self.RecursiveQuicksort(greater, indent + len(l_less))
+
+    return l_less + l_greater
 
 def GenerateListToSort():
   """docstring for Generate"""
@@ -183,8 +202,7 @@ def main():
   sorter = BubbleSort()
   #animation = Animation(list_being_sorted)
   sorter.animation.Display(list_being_sorted, 0)
-  sorter.InsertionSort(list_being_sorted)
+  sorter.RecursiveQuicksort(list_being_sorted, 0)
   time.sleep(3)
 if __name__ == '__main__':
   main()
-
