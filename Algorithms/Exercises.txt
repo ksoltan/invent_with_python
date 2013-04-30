@@ -1,0 +1,31 @@
+1.1-1: Sorting mail that comes at random from the post office, Realtor business, know the area of an irregular plot of land
+
+1.1-2: Amount of memory, Resources like labor
+
+1.1-3: List: deletion and insertion works very quickly. Just insert another pointer. Finding something in a list takes time because you must look through every index to go from one pointer to another to your wanted index.
+
+1.1-4: The two problems are similar because both are looking for a most efficient way, whether it be shortness or lower cost. However, the traveling salesman problem does not have a fixed path. It has different points of delivery and each time the path will differ even if slightly. For now, you can't design an algorithm that will perfectly fit an ever-changing series of coordinates.
+
+1.1-5: The best answer will be necessary for a problem like how to devise a government database to store every citizen's information so that there will be no mess ups with incorrect data allocation. An approximate answer will suffice for the decoding of a genome or an assembly line for a business. If mistakes aren't constant, the business can afford to have a couple mess ups.
+
+1.2-1: A dictionary application would use algorithms. The search for a specific word would use a tree of possibilities, narrowing them down every time another letter was entered.
+
+1.2-2: 0 < n <= 43
+
+1.2-3: n >= 15
+
+1-1: 
+TIME	1 sec	1 min	1 hour	1 day	1 mon	1 year	1 century
+log n	2^10^6	
+sqrt(n)	10^12	
+n		10^6	
+n log n	 
+n**2	10^3
+n**3	10^2
+2**n	log 10^6 ~ 20
+n!		
+
+def Factorial(n):
+	if n == 1:
+		return 1
+	return n * Factorial(n-1)

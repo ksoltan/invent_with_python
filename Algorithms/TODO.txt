@@ -1,0 +1,21 @@
+1. QuickSort - implement:
+	recursion * 
+	visualization -
+
+2. Read Chapter 1 of Algorithms mwahahaha! 
+
+		1 sec	1 min	1 hour	1 day	1 mon	1 year	1 century
+log n	2^10^6	
+sqrt(n)	10^12	
+n		10^6	
+n log n	 
+n**2	10^3
+n**3	10^2
+2**n	log 10^6
+n!		
+
+
+3. QUESTIONS!!!!
+	1) loop-invariants. what are they, why are they needed
+	2) confused about how to calculate performance, running time
+
