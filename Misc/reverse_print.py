@@ -39,20 +39,34 @@ class List():
     while idx > 0:
       if current_node.next:
         current_node = current_node.next
-      # Elsem there is no such index in the list
+      # Else there is no such index in the list
       else:
         raise IndexError()
       idx -= 1
     return current_node
   
-  def Print(self):
+  def ReversePrint(self):
     if not self.head:
-      return
+      return []
+    printed_list = []
     length = self.Size()
     idx = length - 1
     while idx >= 0:
-      print self.head.Get(idx)
+      printed_list.append(self.Get(idx))
+      # print self.Get(idx)
       idx -= 1
+    return printed_list
+
+  def Print(self):
+    if not self.head:
+      return []
+    printed_list = []
+    current_node = self.head
+    while current_node:
+      printed_list.append(current_node)
+      current_node = current_node.next
+      # print self.Get(idx)
+    return printed_list
 
 class ReversePrinter():
   """docstring for ReversePrint"""
